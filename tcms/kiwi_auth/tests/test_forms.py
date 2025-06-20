@@ -2,6 +2,7 @@ import importlib
 
 from django.test import TestCase, override_settings
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
 
 from tcms.kiwi_auth import forms
 
@@ -70,27 +71,27 @@ class TestRegistrationForm(TestCase):
         user = form.save()
         self.assertIsNotNone(user.pk)
     
-    # def test_first_user_becomes_superuser(self):
-    #     User.objects.filter(is_superuser=True).delete()
-    #     form = forms.RegistrationForm(data=self.data)
+    def test_first_user_becomes_superuser(self):
+        User.objects.filter(is_superuser=True).delete()
+        form = forms.RegistrationForm(data=self.data)
         
-    #     user = form.save()
-    #     self.assertTrue(user.is_superuser)
-    #     self.assertTrue(user.is_active)
+        user = form.save()
+        self.assertTrue(user.is_superuser)
+        self.assertTrue(user.is_active)
 
-    # def test_non_first_user_is_not_superuser(self):
-    #     User.objects.create_superuser("admin", "admin@example.com", "adminpass")
-    #     form = forms.RegistrationForm(data=self.data)
+    def test_non_first_user_is_not_superuser(self):
+        User.objects.create_superuser("admin", "admin@example.com", "adminpass")
+        form = forms.RegistrationForm(data=self.data)
         
-    #     user = form.save()
-    #     self.assertFalse(user.is_superuser)
-    #     self.assertFalse(user.is_active)
+        user = form.save()
+        self.assertFalse(user.is_superuser)
+        self.assertFalse(user.is_active)
 
-    # def test_commit_false_skips_save(self):
-    #     User.objects.filter(is_superuser=True).delete()
-    #     form = forms.RegistrationForm(data=self.data)
+    def test_commit_false_skips_save(self):
+        User.objects.filter(is_superuser=True).delete()
+        form = forms.RegistrationForm(data=self.data)
         
-    #     user = form.save(commit=False)
-    #     self.assertIsNone(user.pk)
-    #     self.assertTrue(user.is_superuser)
-    #     self.assertTrue(user.is_active)
+        user = form.save(commit=False)
+        self.assertIsNone(user.pk)
+        self.assertTrue(user.is_superuser)
+        self.assertTrue(user.is_active)
